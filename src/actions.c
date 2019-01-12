@@ -1,7 +1,8 @@
-#include "actions.h"
 #include <stdlib.h>
 #include <curses.h>
 #include <string.h>
+
+#include "interpreter.h"
 
 int reached_end = 0;
 
@@ -90,7 +91,7 @@ void                handle_key_return(t_history **history_head, t_history **hist
     // First element is now buffer content
     strcpy((*history_head)->line, cursor->buffer);
     // Parse
-    // parse(memory, cursor);
+    parse(memory, cursor);
     // Set buffer to empty
     memset(cursor->buffer, 0, sizeof(cursor->buffer));
 

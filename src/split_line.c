@@ -2,6 +2,7 @@
 #include    <stdio.h>
 #include    <string.h>
 #include    <unistd.h>
+#include    "interpreter.h"
 
 int         count_tokens(char *str, char c) {
     int     tokens = 1;

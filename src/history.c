@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
-#include "history.h"
+#include "interpreter.h"
 
 int             add_element_to_history(t_history **list, char *element)
 {

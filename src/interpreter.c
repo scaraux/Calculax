@@ -3,12 +3,7 @@
 #include            <string.h>
 #include            <curses.h>
 #include            <termios.h>
-
 #include            "interpreter.h"
-#include            "split_line.h"
-#include            "utils.h"
-#include            "actions.h"
-#include            "memory.h"
 
 int                 get_array_size(char **tokens)
 {
@@ -103,6 +98,8 @@ int                 configure(t_cursor *cursor)
     // info.c_cc[VMIN] = 1;          /* wait until at least one keystroke available */
     // info.c_cc[VTIME] = 0;         /* no timeout */
     // tcsetattr(0, TCSANOW, &info); /* set immediately */
+
+    return(0);
 }
 
 int                 parse(t_memory **memory, t_cursor *cursor)
@@ -133,9 +130,10 @@ int                 parse(t_memory **memory, t_cursor *cursor)
         printw("%d\n", result);
         cursor->y += 1;
     }
+    return(1);
 }
 
-int                 parse_code(int c)
+int                 parse_key_pad(int c)
 {
     switch(c)
     {
@@ -180,7 +178,7 @@ int                 eval()
     {
         c = getch();
 
-        int code = parse_code(c);
+        int code = parse_key_pad(c);
 
         if (code == 6)
         {

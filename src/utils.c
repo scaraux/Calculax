@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <ctype.h>
+#include "interpreter.h"
 
 int     isNumber(char *str)
 {

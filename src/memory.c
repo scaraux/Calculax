@@ -1,7 +1,7 @@
 #include        <stdlib.h>
 #include        <string.h>
 #include        <stdio.h>
-#include        "memory.h"
+#include        "interpreter.h"
 
 int		          add_variable_to_mem(t_memory **memory, char *name, int value)
 {
