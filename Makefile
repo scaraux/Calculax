@@ -3,6 +3,7 @@ NAME = Calculax
 SRC =   src/main.c \
 		src/utils.c \
 		src/interpreter.c \
+		src/calculator.c \
 		src/memory.c \
 		src/history.c \
 		src/actions.c \
@@ -13,7 +14,7 @@ OBJ =		$(SRC:.c=.o)
 all :		$(NAME)
 
 $(NAME):	$(OBJ)
-			gcc  -o $(NAME) $(OBJ) -lncurses
+			gcc -g3 -o $(NAME) $(OBJ) -lncurses
 
 clean:
 			rm -f $(OBJ)

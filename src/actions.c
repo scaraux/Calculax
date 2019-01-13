@@ -5,6 +5,7 @@
 #include "interpreter.h"
 
 int reached_end = 0;
+char first[4096];
 
 int                 configure_actions(t_key_action **actions)
 {
@@ -25,20 +26,24 @@ int                 configure_actions(t_key_action **actions)
 
 void                update_prompt_and_buffer(t_cursor *cursor, char *line)
 {
-    // Move cursor to beggining of line
     move(cursor->y, 0);
-    // Clear line
     clrtoeol();
-    // move(cursor->y, cursor->x);
-    // Print prom
-    printw("%s %s", PROMPT, line);
-    // Copy new selected line into buffer
-    strcpy(cursor->buffer, line);
+    printw("%s%s", PROMPT, line);
+    if (cursor->buffer != line)
+    {
+        strcpy(cursor->buffer, line);
+    }
 }
 
 void                handle_key(t_history **history, t_cursor *cursor, t_memory **memory, int c)
 {
+    char            tmp[2];
+
+    tmp[0] = c;
+    tmp[1] = '\0';
+
     addch(c);
+    strcat(first, tmp);
     cursor->buffer[cursor->x] = c;
     cursor->x += 1;
 }
@@ -58,10 +63,18 @@ void                handle_key_down(t_history **history, t_cursor *cursor, t_mem
 {
     if (*history == NULL)
         return;
+
     if ((*history)->prev != NULL)
     {
         *history = (*history)->prev;
-        update_prompt_and_buffer(cursor, (*history)->line);
+
+        if ((*history)->prev == NULL)
+        {
+        update_prompt_and_buffer(cursor, first);
+        }
+        else {
+            update_prompt_and_buffer(cursor, (*history)->line);
+        }
     }
 }
 
@@ -87,18 +100,11 @@ void                handle_key_tab(t_history **history, t_cursor *cursor, t_memo
 void                handle_key_return(t_history **history_head, t_history **history_cursor, t_cursor *cursor, t_memory **memory, int c)
 {
     addch(c);
-
-    // First element is now buffer content
     strcpy((*history_head)->line, cursor->buffer);
-    // Parse
     parse(memory, cursor);
-    // Set buffer to empty
     memset(cursor->buffer, 0, sizeof(cursor->buffer));
-
     add_element_to_history(history_head, cursor->buffer);
-
     *history_cursor = *history_head;
-
     printw("%s", PROMPT);
     cursor->x = 0;
     cursor->y += 1;

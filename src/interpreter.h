@@ -5,6 +5,9 @@
 #define                 MSG_STORE_SUCESS    "Success!"
 #define                 MSG_FORMAT_ERROR    "Oops! Format error."
 
+char first[4096];
+
+
 typedef struct	        s_cursor
 {
     int		            x;
@@ -35,8 +38,10 @@ int                     configure(t_cursor *cursor);
 int                     eval();
 int                     parse(t_memory **memory, t_cursor *cursor);
 int                     parse_key_pad(int c);
-int                     calculate(char **tokens, t_memory **memory);
 int                     store(char **tokens, t_memory **memory);
+
+int                     get_array_size(char **tokens);
+int                     calculate(char **tokens, t_memory **memory);
 int                     set_operand(int *operand, char *str, t_memory **memory);
 
 int                     configure_actions(t_key_action **actions);
@@ -55,6 +60,7 @@ char                    *get_matching_variable(t_memory **memory, char *name);
 void                    dump_memory(t_memory **memory);
 
 int		                add_element_to_history(t_history **list, char *element);
+int                     add_ptr_to_history(t_history **list, char *element);
 
 char                    **split_line(char *str, char c);
 int                     count_tokens(char *str, char c);

@@ -9,7 +9,6 @@ int             add_element_to_history(t_history **list, char *element)
     new_elem = malloc(sizeof(*new_elem));
     if (new_elem == NULL)
         return(-1);
-    new_elem->end = 0;
     new_elem->line = strdup(element);
     new_elem->next = *list;
     new_elem->prev = NULL;
@@ -33,7 +32,6 @@ int             add_ptr_to_history(t_history **list, char *element)
     new_elem = malloc(sizeof(*new_elem));
     if (new_elem == NULL)
         return(-1);
-    new_elem->end = 0;
     new_elem->line = element;
     new_elem->next = *list;
     new_elem->prev = NULL;
