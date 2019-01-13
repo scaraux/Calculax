@@ -64,7 +64,4 @@ void                    free_history(t_hist **head);
 char                    **split_line(char *str, char c);
 int                     count_tokens(char *str, char c);
 
-int                     isNumber(char *str);
-
-
 #endif		        /* _INTERPRETER_H_ */

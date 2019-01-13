@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "interpreter.h"
+#include "utils.h"
 
 int                 get_array_size(char **tokens)
 {
@@ -18,7 +19,7 @@ int                 set_operand(int *operand, char *str, t_memory **memory)
 {
     int             tmp;
 
-    if (isNumber(str))
+    if (is_number(str))
     {
         *operand = atoi(str);
         return(1);

@@ -20,14 +20,14 @@ int         count_tokens(char *str, char c) {
 
 char         **split_line(char *str, char c)
 {
-    int token_count = 0;
-    int token_len = 1;
-    int i = 0;
-    int j = 0;
-    int k = 0;
-    char *p;
-    char *t;
-    char **tokens;
+    int     token_count = 0;
+    int     token_len = 1;
+    int     i = 0;
+    int     j = 0;
+    int     k = 0;
+    char    *p;
+    char    *t;
+    char    **tokens;
 
     token_count = count_tokens(str, c);
 

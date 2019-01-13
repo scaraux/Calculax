@@ -7,6 +7,7 @@ SRC =   src/main.c \
 		src/memory.c \
 		src/history.c \
 		src/actions.c \
+		src/trie.c \
 		src/split_line.c
 
 OBJ =		$(SRC:.c=.o)
