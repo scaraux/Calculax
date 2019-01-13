@@ -1,18 +1,18 @@
 #ifndef		            _INTERPRETER_H_
 #define	                _INTERPRETER_H_
 
+#include                <signal.h>
+
 #define                 PROMPT              "> "
 #define                 MSG_STORE_SUCESS    "Success!"
 #define                 MSG_FORMAT_ERROR    "Oops! Format error."
 
-char first[4096];
-
+#define                 BUFF_LENGHT         256
 
 typedef struct	        s_cursor
 {
     int		            x;
     int		            y;
-    char                buffer[4096];
 }		                t_cursor;
 
 typedef struct	        s_memory
@@ -23,20 +23,19 @@ typedef struct	        s_memory
 }		                t_memory;
 
 
-typedef struct	        s_history
+typedef struct	        s_hist
 {
     char                end;
-    char		        *line;
-    struct s_history    *prev;
-    struct s_history 	*next;
-}		                t_history;
+    char		        line[BUFF_LENGHT];
+    struct s_hist       *prev;
+    struct s_hist    	*next;
+}		                t_hist;
 
-typedef                 void (*t_key_action)(t_history **history, t_cursor *cursor, t_memory **memory, int c);
+typedef                 void (*t_key_action)(t_hist **head, t_hist **curr, t_cursor *cursor, t_memory **memory, int c);
 
+int                     calculax();
 int                     configure(t_cursor *cursor);
-
-int                     eval();
-int                     parse(t_memory **memory, t_cursor *cursor);
+int                     parse(char *buffer, t_memory **memory, t_cursor *cursor);
 int                     parse_key_pad(int c);
 int                     store(char **tokens, t_memory **memory);
 
@@ -44,27 +43,28 @@ int                     get_array_size(char **tokens);
 int                     calculate(char **tokens, t_memory **memory);
 int                     set_operand(int *operand, char *str, t_memory **memory);
 
+void                    handle_key(t_hist **head, t_hist **curr, t_cursor *cursor, t_memory **memory, int c);
+void                    handle_key_up(t_hist **head, t_hist **curr, t_cursor *cursor, t_memory **memory, int c);
+void                    handle_key_down(t_hist **head, t_hist **curr, t_cursor *cursor, t_memory **memory, int c);
+void                    handle_key_right(t_hist **head, t_hist **curr, t_cursor *cursor, t_memory **memory, int c);
+void                    handle_key_left(t_hist **head, t_hist **curr, t_cursor *cursor, t_memory **memory, int c);
+void                    handle_key_tab(t_hist **head, t_hist **curr, t_cursor *cursor, t_memory **memory, int c);
+void                    handle_key_return(t_hist **history, t_hist **history_cursor, t_cursor *cursor, t_memory **memory, int c);
 int                     configure_actions(t_key_action **actions);
-void                    handle_key(t_history **history, t_cursor *cursor, t_memory **memory, int c);
-void                    handle_key_up(t_history **history, t_cursor *cursor, t_memory **memory, int c);
-void                    handle_key_down(t_history **history, t_cursor *cursor, t_memory **memory, int c);
-void                    handle_key_right(t_history **history, t_cursor *cursor, t_memory **memory, int c);
-void                    handle_key_left(t_history **history, t_cursor *cursor, t_memory **memory, int c);
-void                    handle_key_tab(t_history **history, t_cursor *cursor, t_memory **memory, int c);
-
-void                    handle_key_return(t_history **history, t_history **history_cursor, t_cursor *cursor, t_memory **memory, int c);
+void                    free_actions(t_key_action **actions);
 
 int		                add_variable_to_mem(t_memory **list, char *name, int value);
 int                     get_variable(t_memory **memory, char *name);
 char                    *get_matching_variable(t_memory **memory, char *name);
 void                    dump_memory(t_memory **memory);
 
-int		                add_element_to_history(t_history **list, char *element);
-int                     add_ptr_to_history(t_history **list, char *element);
+int                     insert_element_to_history(t_hist **list, char *element);
+void                    free_history(t_hist **head);
 
 char                    **split_line(char *str, char c);
 int                     count_tokens(char *str, char c);
 
 int                     isNumber(char *str);
+
 
 #endif		        /* _INTERPRETER_H_ */

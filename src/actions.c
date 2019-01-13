@@ -1,11 +1,8 @@
 #include <stdlib.h>
 #include <curses.h>
 #include <string.h>
-
+#include <signal.h>
 #include "interpreter.h"
-
-int reached_end = 0;
-char first[4096];
 
 int                 configure_actions(t_key_action **actions)
 {
@@ -24,18 +21,19 @@ int                 configure_actions(t_key_action **actions)
     return(0);
 }
 
+void                free_actions(t_key_action **actions)
+{
+    free(*actions);
+}
+
 void                update_prompt_and_buffer(t_cursor *cursor, char *line)
 {
     move(cursor->y, 0);
     clrtoeol();
     printw("%s%s", PROMPT, line);
-    if (cursor->buffer != line)
-    {
-        strcpy(cursor->buffer, line);
-    }
 }
 
-void                handle_key(t_history **history, t_cursor *cursor, t_memory **memory, int c)
+void                handle_key(t_hist **head, t_hist **curr, t_cursor *cursor, t_memory **memory, int c)
 {
     char            tmp[2];
 
@@ -43,69 +41,70 @@ void                handle_key(t_history **history, t_cursor *cursor, t_memory *
     tmp[1] = '\0';
 
     addch(c);
-    strcat(first, tmp);
-    cursor->buffer[cursor->x] = c;
-    cursor->x += 1;
+    strcat((*head)->line, tmp);
 }
 
-void                handle_key_up(t_history **history, t_cursor *cursor, t_memory **memory, int c)
+void                handle_key_up(t_hist **head, t_hist **curr, t_cursor *cursor, t_memory **memory, int c)
 {
-    if (*history == NULL)
-        return;
-    if ((*history)->next != NULL)
+    char            *new_buffer;
+
+    if ((*curr)->next != NULL)
     {
-        *history = (*history)->next;
-        update_prompt_and_buffer(cursor, (*history)->line);
+        *curr = (*curr)->next;
+        new_buffer = (*curr)->line;
+        update_prompt_and_buffer(cursor, new_buffer);
     }
 }
 
-void                handle_key_down(t_history **history, t_cursor *cursor, t_memory **memory, int c)
+void                handle_key_down(t_hist **head, t_hist **curr, t_cursor *cursor, t_memory **memory, int c)
 {
-    if (*history == NULL)
-        return;
+    char            *new_buffer;
 
-    if ((*history)->prev != NULL)
+    if ((*curr)->prev != NULL)
     {
-        *history = (*history)->prev;
-
-        if ((*history)->prev == NULL)
-        {
-        update_prompt_and_buffer(cursor, first);
-        }
-        else {
-            update_prompt_and_buffer(cursor, (*history)->line);
-        }
+        *curr = (*curr)->prev;
+        new_buffer = (*curr)->line;
+        update_prompt_and_buffer(cursor, new_buffer);
     }
 }
 
-void                handle_key_left(t_history **history, t_cursor *cursor, t_memory **memory, int c)
+void                handle_key_left(t_hist **head, t_hist **curr, t_cursor *cursor, t_memory **memory, int c)
 {
     cursor->x -= 1;
     move(cursor->y, cursor->x);
 }
 
-void                handle_key_right(t_history **history, t_cursor *cursor, t_memory **memory, int c)
+void                handle_key_right(t_hist **head, t_hist **curr, t_cursor *cursor, t_memory **memory, int c)
 {
     cursor->x += 1;
     move(cursor->y, cursor->x);
 }
 
-void                handle_key_tab(t_history **history, t_cursor *cursor, t_memory **memory, int c)
+void                handle_key_tab(t_hist **head, t_hist **curr, t_cursor *cursor, t_memory **memory, int c)
 {
     char *completion = get_matching_variable(memory, "toto");
     printw("%s", completion);
     cursor->y += 1;
 }
 
-void                handle_key_return(t_history **history_head, t_history **history_cursor, t_cursor *cursor, t_memory **memory, int c)
+void                handle_key_return(t_hist **head, t_hist **curr, t_cursor *cursor, t_memory **memory, int c)
 {
+    char            *buffer_to_eval;
+
     addch(c);
-    strcpy((*history_head)->line, cursor->buffer);
-    parse(memory, cursor);
-    memset(cursor->buffer, 0, sizeof(cursor->buffer));
-    add_element_to_history(history_head, cursor->buffer);
-    *history_cursor = *history_head;
+
+    buffer_to_eval = (*curr)->line;
+
+    // parse(buffer_to_eval, memory, cursor);
+
+    insert_element_to_history(head, buffer_to_eval);
+
+    memset((*head)->line, 0, BUFF_LENGHT);
+
+    *curr = *head;
+
     printw("%s", PROMPT);
+
     cursor->x = 0;
     cursor->y += 1;
 }

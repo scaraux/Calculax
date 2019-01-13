@@ -5,6 +5,8 @@
 #include            <termios.h>
 #include            "interpreter.h"
 
+char                eval = 1;
+void                sigint_handler(int);
 
 int                 store(char **tokens, t_memory **memory)
 {
@@ -23,35 +25,27 @@ int                 store(char **tokens, t_memory **memory)
 
 int                 configure(t_cursor *cursor)
 {
-    memset(cursor->buffer, 0, sizeof(cursor->buffer));
+    signal(SIGINT, sigint_handler);
 
     cursor->x = 0;
     cursor->y = 0;
 
     initscr();
-    keypad(stdscr, TRUE);		/* We get F1, F2 etc..		*/
+    keypad(stdscr, TRUE);
 	cbreak();
 	noecho();
-
-    // struct          termios info;
-    // tcgetattr(0, &info);          /* get current terminal attirbutes; 0 is the file descriptor for stdin */
-    // info.c_lflag &= ~ICANON;  /* disable canonical mode */
-    // info.c_lflag &= ~ECHO;
-    // info.c_cc[VMIN] = 1;          /* wait until at least one keystroke available */
-    // info.c_cc[VTIME] = 0;         /* no timeout */
-    // tcsetattr(0, TCSANOW, &info); /* set immediately */
-
+    timeout(10);
     return(0);
 }
 
-int                 parse(t_memory **memory, t_cursor *cursor)
+int                 parse(char *buffer, t_memory **memory, t_cursor *cursor)
 {
     char            **tokens = NULL;
     int             token_count;
     int             result;
     size_t          size;
 
-    tokens = split_line(cursor->buffer, ' ');
+    tokens = split_line(buffer, ' ');
     token_count = get_array_size(tokens);
     if ((token_count < 3) || (token_count % 2) == 0)
     {
@@ -96,42 +90,44 @@ int                 parse_key_pad(int c)
     }
 }
 
-int                 eval()
+int                 calculax()
 {
     t_cursor        cursor;
     t_key_action    *actions;
-    t_history       *history_cursor = NULL;
-    t_history       *history_head = NULL;
+    t_hist          *curr = NULL;
+    t_hist          *head = NULL;
     t_memory        *memory = NULL;
     int             c;
+    int             code;
 
-    memset(first, 0, sizeof(first));
     configure(&cursor);
     configure_actions(&actions);
+    insert_element_to_history(&head, "");
 
-    add_element_to_history(&history_head, "oscar = 3");
-    add_element_to_history(&history_head, "oscar = 2");
-    add_element_to_history(&history_head, "");
-    // add_ptr_to_history(&history_head, cursor.buffer);
-
-    history_cursor = history_head;
-
+    curr = head;
     printw("%s", PROMPT);
-    while (42)
+    while (eval == 1)
     {
-        c = getch();
-
-        int code = parse_key_pad(c);
-
-        if (code == 6)
+        if ((c = getch()) != ERR)
         {
-            handle_key_return(&history_head, &history_cursor, &cursor, &memory, c);
-        }
-        else {
-            actions[code](&history_cursor, &cursor, &memory, c);
+            code = parse_key_pad(c);
+            if (code == 6)
+            {
+                handle_key_return(&head, &curr, &cursor, &memory, c);
+            }
+            else
+            {
+                actions[code](&head, &curr, &cursor, &memory, c);
+            }
         }
     }
     endwin();
-    return (1);
+    free_history(&head);
+    free_actions(&actions);
+    return (0);
 }
 
+void sigint_handler(int sig)
+{
+    eval = 0;
+}

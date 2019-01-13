@@ -14,7 +14,7 @@ OBJ =		$(SRC:.c=.o)
 all :		$(NAME)
 
 $(NAME):	$(OBJ)
-			gcc -g3 -o $(NAME) $(OBJ) -lncurses
+			gcc -g3 -Wall -Wextra -pedantic -o $(NAME) $(OBJ) -lncurses
 
 clean:
 			rm -f $(OBJ)
