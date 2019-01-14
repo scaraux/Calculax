@@ -1,6 +1,8 @@
 #ifndef		            _TRIE_H_
 #define	                _TRIE_H_
 
+#include                <stdbool.h>
+
 #define                 ARRAY_SIZE(a) sizeof(a)/sizeof(a[0])
 
 #define                 ALPHABET_SIZE (26)

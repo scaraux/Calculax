@@ -3,6 +3,12 @@
 #include <string.h>
 #include <signal.h>
 #include "interpreter.h"
+#include "utils.h"
+
+void                free_actions(t_key_action **actions)
+{
+    free(*actions);
+}
 
 int                 configure_actions(t_key_action **actions)
 {
@@ -15,15 +21,10 @@ int                 configure_actions(t_key_action **actions)
     (*actions)[1] = handle_key_down;
     (*actions)[2] = handle_key_left;
     (*actions)[3] = handle_key_right;
-    (*actions)[4] = handle_key_tab;
+    (*actions)[4] = handle_key_backspace;
     (*actions)[5] = handle_key;
     (*actions)[6] = NULL;
     return(0);
-}
-
-void                free_actions(t_key_action **actions)
-{
-    free(*actions);
 }
 
 void                update_prompt_and_buffer(t_cursor *cursor, char *line)
@@ -80,31 +81,41 @@ void                handle_key_right(t_hist **head, t_hist **curr, t_cursor *cur
     move(cursor->y, cursor->x);
 }
 
-void                handle_key_tab(t_hist **head, t_hist **curr, t_cursor *cursor, t_memory **memory, int c)
+void                handle_key_backspace(t_hist **head, t_hist **curr, t_cursor *cursor, t_memory **memory, int c)
 {
-    char *completion = get_matching_variable(memory, "toto");
-    printw("%s", completion);
-    cursor->y += 1;
 }
 
-void                handle_key_return(t_hist **head, t_hist **curr, t_cursor *cursor, t_memory **memory, int c)
+void                handle_key_tab(t_hist **head, t_hist **curr, t_cursor *cursor, t_memory **memory, t_trie **trie, int c)
+{
+    char            *line;
+    char            *completion;
+    char            *prefix;
+
+    line = ((*curr)->line);
+    if ((prefix = get_last_word(line)) == NULL)
+    {
+        return;
+    }
+    completion = get_matching_variable(memory, trie, prefix);
+    if (completion != NULL)
+    {
+        completion = string_difference(prefix, completion);
+        printw("%s", completion);
+        strcat((*head)->line, completion);
+    }
+}
+
+void                handle_key_return(t_hist **head, t_hist **curr, t_cursor *cursor, t_memory **memory, t_trie **trie, int c)
 {
     char            *buffer_to_eval;
 
     addch(c);
-
     buffer_to_eval = (*curr)->line;
-
-    // parse(buffer_to_eval, memory, cursor);
-
+    parse(buffer_to_eval, memory, cursor, trie);
     insert_element_to_history(head, buffer_to_eval);
-
     memset((*head)->line, 0, BUFF_LENGHT);
-
     *curr = *head;
-
     printw("%s", PROMPT);
-
     cursor->x = 0;
     cursor->y += 1;
 }

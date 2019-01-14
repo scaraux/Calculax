@@ -135,7 +135,6 @@ t_sugg      *get_auto_suggestions(t_trie *root, char *query)
 {
     t_sugg  *head = NULL;
     t_trie  *pCrawl = root;
-
     // Check if prefix is present and find the
     // the node (of last level) with last character
     // of given string.
@@ -175,29 +174,29 @@ t_sugg      *get_auto_suggestions(t_trie *root, char *query)
     return head;
 }
 
-int         main()
-{
-    t_trie *root = get_trie_node();
+// int         main()
+// {
+//     t_trie *root = get_trie_node();
 
-    insert_key_to_trie(root, "hello");
-    insert_key_to_trie(root, "dog");
-    insert_key_to_trie(root, "hell");
-    insert_key_to_trie(root, "cat");
-    insert_key_to_trie(root, "a");
-    insert_key_to_trie(root, "hel");
-    insert_key_to_trie(root, "help");
-    insert_key_to_trie(root, "helps");
-    insert_key_to_trie(root, "helping");
+//     insert_key_to_trie(root, "hello");
+//     insert_key_to_trie(root, "dog");
+//     insert_key_to_trie(root, "hell");
+//     insert_key_to_trie(root, "cat");
+//     insert_key_to_trie(root, "a");
+//     insert_key_to_trie(root, "hel");
+//     insert_key_to_trie(root, "help");
+//     insert_key_to_trie(root, "helps");
+//     insert_key_to_trie(root, "helping");
 
-    t_sugg *suggestions = get_auto_suggestions(root, "hel");
+//     t_sugg *suggestions = get_auto_suggestions(root, "hel");
 
-    while (suggestions != NULL)
-    {
-        printf("%s\n", suggestions->str);
-        suggestions = suggestions->next;
-    }
-    return 0;
-}
+//     while (suggestions != NULL)
+//     {
+//         printf("%s\n", suggestions->str);
+//         suggestions = suggestions->next;
+//     }
+//     return 0;
+// }
 
 void        search_driver()
 {

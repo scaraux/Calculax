@@ -12,3 +12,4 @@ RUN apt-get update && \
 RUN apt-get update && apt-get install valgrind -y
 
 RUN apt-get update && apt-get install libncurses5-dev -y
+#docker run -v /Users/rakso/Projects/todd:/app -it 881934d5b459 /bin/bash

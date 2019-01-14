@@ -1,11 +1,12 @@
-#include        <stdlib.h>
-#include        <string.h>
-#include        <stdio.h>
-#include        "interpreter.h"
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include "interpreter.h"
+#include "trie.h"
 
 int		          add_variable_to_mem(t_memory **memory, char *name, int value)
 {
-  t_memory	    *new_elem;
+  t_memory	      *new_elem;
 
   new_elem = malloc(sizeof(*new_elem));
   if (new_elem == NULL)
@@ -19,7 +20,7 @@ int		          add_variable_to_mem(t_memory **memory, char *name, int value)
   return (0);
 }
 
-int             get_variable(t_memory **memory, char *name)
+int               get_variable(t_memory **memory, char *name)
 {
     t_memory    *tmp;
 
@@ -46,7 +47,13 @@ void             dump_memory(t_memory **memory)
     }
 }
 
-char             *get_matching_variable(t_memory **memory, char *name)
+char             *get_matching_variable(t_memory **memory, t_trie **trie, char *name)
 {
-    return "oscar";
+    t_sugg *suggestions = get_auto_suggestions((*trie), name);
+
+    if (suggestions == NULL)
+    {
+        return NULL;
+    }
+    return suggestions->str;
 }
