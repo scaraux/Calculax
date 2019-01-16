@@ -1,5 +1,6 @@
-AUTOMAKE_OPTIONS = foreign
+AUTOMAKE_OPTIONS = foreign subdir-objects
 bin_PROGRAMS = calculax
+calculax_LDADD = -lncurses
 calculax_SOURCES = src/main.c \
                    src/actions.c \
                    src/calculator.c \
@@ -10,5 +11,3 @@ calculax_SOURCES = src/main.c \
                    src/trie.c \
                    src/utils.c \
                    src/interpreter.h src/utils.h
-
-AM_LDFLAGS = -lncurses

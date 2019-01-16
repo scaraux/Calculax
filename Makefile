@@ -108,7 +108,7 @@ am_calculax_OBJECTS = src/main.$(OBJEXT) src/actions.$(OBJEXT) \
 	src/split_line.$(OBJEXT) src/trie.$(OBJEXT) \
 	src/utils.$(OBJEXT)
 calculax_OBJECTS = $(am_calculax_OBJECTS)
-calculax_LDADD = $(LDADD)
+calculax_DEPENDENCIES =
 AM_V_P = $(am__v_P_$(V))
 am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))
 am__v_P_0 = false
@@ -189,13 +189,13 @@ distuninstallcheck_listfiles = find . -type f -print
 am__distuninstallcheck_listfiles = $(distuninstallcheck_listfiles) \
   | sed 's|^\./|$(prefix)/|' | grep -v '$(infodir)/dir$$'
 distcleancheck_listfiles = find . -type f -print
-ACLOCAL = ${SHELL} /Users/rakso/Projects/Calculax/missing aclocal-1.16
+ACLOCAL = ${SHELL} /app/missing aclocal-1.16
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 1
-AUTOCONF = ${SHELL} /Users/rakso/Projects/Calculax/missing autoconf
-AUTOHEADER = ${SHELL} /Users/rakso/Projects/Calculax/missing autoheader
-AUTOMAKE = ${SHELL} /Users/rakso/Projects/Calculax/missing automake-1.16
-AWK = awk
+AUTOCONF = ${SHELL} /app/missing autoconf
+AUTOHEADER = ${SHELL} /app/missing autoheader
+AUTOMAKE = ${SHELL} /app/missing automake-1.16
+AWK = mawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2
@@ -203,8 +203,8 @@ CPPFLAGS =
 CYGPATH_W = echo
 DEFS = -DPACKAGE_NAME=\"calculax\" -DPACKAGE_TARNAME=\"calculax\" -DPACKAGE_VERSION=\"0.1\" -DPACKAGE_STRING=\"calculax\ 0.1\" -DPACKAGE_BUGREPORT=\"gottingoscar@gmail.com\" -DPACKAGE_URL=\"\" -DPACKAGE=\"calculax\" -DVERSION=\"0.1\"
 DEPDIR = .deps
-ECHO_C = \c
-ECHO_N = 
+ECHO_C = 
+ECHO_N = -n
 ECHO_T = 
 EXEEXT = 
 INSTALL = /usr/bin/install -c
@@ -216,8 +216,8 @@ LDFLAGS =
 LIBOBJS = 
 LIBS = 
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /Users/rakso/Projects/Calculax/missing makeinfo
-MKDIR_P = ./install-sh -c -d
+MAKEINFO = ${SHELL} /app/missing makeinfo
+MKDIR_P = /bin/mkdir -p
 OBJEXT = o
 PACKAGE = calculax
 PACKAGE_BUGREPORT = gottingoscar@gmail.com
@@ -228,13 +228,13 @@ PACKAGE_URL =
 PACKAGE_VERSION = 0.1
 PATH_SEPARATOR = :
 SET_MAKE = 
-SHELL = /bin/sh
+SHELL = /bin/bash
 STRIP = 
 VERSION = 0.1
-abs_builddir = /Users/rakso/Projects/Calculax
-abs_srcdir = /Users/rakso/Projects/Calculax
-abs_top_builddir = /Users/rakso/Projects/Calculax
-abs_top_srcdir = /Users/rakso/Projects/Calculax
+abs_builddir = /app
+abs_srcdir = /app
+abs_top_builddir = /app
+abs_top_srcdir = /app
 ac_ct_CC = gcc
 am__include = include
 am__leading_dot = .
@@ -253,7 +253,7 @@ host_alias =
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /Users/rakso/Projects/Calculax/install-sh
+install_sh = ${SHELL} /app/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -273,7 +273,8 @@ target_alias =
 top_build_prefix = 
 top_builddir = .
 top_srcdir = .
-AUTOMAKE_OPTIONS = foreign
+AUTOMAKE_OPTIONS = foreign subdir-objects
+calculax_LDADD = -lncurses
 calculax_SOURCES = src/main.c \
                    src/actions.c \
                    src/calculator.c \
@@ -285,7 +286,6 @@ calculax_SOURCES = src/main.c \
                    src/utils.c \
                    src/interpreter.h src/utils.h
 
-AM_LDFLAGS = -lncurses
 all: all-am
 
 .SUFFIXES:
